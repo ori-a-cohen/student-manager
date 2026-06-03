@@ -809,7 +809,7 @@
             </div>
             <div class="form-group">
                 <label>סוג</label>
-                <select id="noteType">
+                <select id="noteType" onchange="toggleFileUpload()">
                     <option value="conversation">שיחה עם הורים</option>
                     <option value="discipline">אירוע משמעת</option>
                     <option value="committee">ועדה</option>
@@ -821,6 +821,11 @@
             <div class="form-group">
                 <label>תוכן</label>
                 <textarea id="noteContent" placeholder="כתבי כאן..."></textarea>
+            </div>
+            <div class="form-group" id="fileUploadGroup" style="display:none">
+                <label>📎 צירוף קובץ (PDF/תמונה)</label>
+                <input type="file" id="noteFile" accept=".pdf,image/*" onchange="handleNoteFile(event)">
+                <div id="filePreview" style="margin-top:8px;font-size:13px;color:#666;"></div>
             </div>
             <button class="submit-btn" onclick="addNote()">שמירה</button>
         </div>
@@ -1142,17 +1147,6 @@
                         </div>
                     </div>
                     
-                    ${diagnoses.length > 0 ? `
-                        <h3 style="margin: 16px 0 8px; font-size: 16px;">אבחונים</h3>
-                        ${diagnoses.map(d => `
-                            <div class="note-item">
-                                <div class="note-date">${d.date}</div>
-                                <div class="note-text">${d.content}</div>
-                            </div>
-                        `).join('')}
-                    ` : ''}
-                    
-                    <button class="add-note-btn" onclick="openNoteModal('diagnosis')">+ הוספת אבחון</button>
                     <button class="delete-btn" onclick="deleteStudent()">🗑️ מחיקת תלמיד/ה</button>
                 </div>
                 
@@ -1227,7 +1221,27 @@
                 </div>
                 
                 <div id="tabHistory" class="tab-content">
-                    <h3 style="margin-bottom: 12px; font-size: 16px;">כל ההערות</h3>
+                    <h3 style="margin-bottom: 12px; font-size: 16px;">📋 אבחונים</h3>
+                    ${diagnoses.length > 0 ? diagnoses.map(d => `
+                        <div class="note-item">
+                            <div class="note-header">
+                                <div class="note-date">${d.date}</div>
+                                <span class="note-type-badge" style="background:#e8f5e9;color:#2e7d32;">אבחון</span>
+                            </div>
+                            <div class="note-text">${d.content}</div>
+                            ${d.file ? `
+                                <div style="margin-top:10px;">
+                                    <a href="${d.file}" target="_blank" download="${d.fileName || 'קובץ'}" 
+                                       style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:#f0f0f5;border-radius:8px;color:#333;text-decoration:none;font-size:13px;">
+                                        📎 ${d.fileName || 'צפייה בקובץ'}
+                                    </a>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `).join('') : '<p style="color:#666;text-align:center;padding:20px;">אין אבחונים</p>'}
+                    <button class="add-note-btn" onclick="openNoteModal('diagnosis')">+ הוספת אבחון</button>
+                    
+                    <h3 style="margin: 24px 0 12px; font-size: 16px;">📝 הערות כלליות</h3>
                     ${generalNotes.length > 0 ? generalNotes.map(n => `
                         <div class="note-item">
                             <div class="note-date">${n.date}</div>
@@ -1327,9 +1341,17 @@
             openModal('addStudentModal');
         }
         
+        let pendingNoteFile = null;
+        let pendingNoteFileName = null;
+        
         function openNoteModal(type) {
             document.getElementById('noteType').value = type;
             document.getElementById('noteContent').value = '';
+            document.getElementById('noteFile').value = '';
+            document.getElementById('filePreview').innerHTML = '';
+            pendingNoteFile = null;
+            pendingNoteFileName = null;
+            
             const titles = {
                 'conversation': 'תיעוד שיחה עם הורים',
                 'diagnosis': 'הוספת אבחון',
@@ -1339,7 +1361,41 @@
                 'committee': 'תיעוד ועדה'
             };
             document.getElementById('noteModalTitle').textContent = titles[type];
+            toggleFileUpload();
             openModal('addNoteModal');
+        }
+        
+        function toggleFileUpload() {
+            const noteType = document.getElementById('noteType').value;
+            const fileGroup = document.getElementById('fileUploadGroup');
+            // Show file upload for diagnosis type
+            fileGroup.style.display = (noteType === 'diagnosis') ? 'block' : 'none';
+        }
+        
+        function handleNoteFile(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                pendingNoteFile = null;
+                pendingNoteFileName = null;
+                document.getElementById('filePreview').innerHTML = '';
+                return;
+            }
+            
+            // Check file size (max 5MB for localStorage)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('הקובץ גדול מדי (מקסימום 5MB)');
+                event.target.value = '';
+                return;
+            }
+            
+            pendingNoteFileName = file.name;
+            document.getElementById('filePreview').innerHTML = `✅ ${file.name}`;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                pendingNoteFile = e.target.result;
+            };
+            reader.readAsDataURL(file);
         }
         
         // CRUD Functions
@@ -1393,12 +1449,25 @@
             
             if (!student.notes) student.notes = [];
             
-            student.notes.unshift({
+            const noteType = document.getElementById('noteType').value;
+            const newNote = {
                 id: generateId(),
-                type: document.getElementById('noteType').value,
+                type: noteType,
                 content: content,
                 date: new Date().toLocaleDateString('he-IL')
-            });
+            };
+            
+            // Add file if present (for diagnosis)
+            if (noteType === 'diagnosis' && pendingNoteFile) {
+                newNote.file = pendingNoteFile;
+                newNote.fileName = pendingNoteFileName;
+            }
+            
+            student.notes.unshift(newNote);
+            
+            // Reset file state
+            pendingNoteFile = null;
+            pendingNoteFileName = null;
             
             saveData();
             closeModal('addNoteModal');
