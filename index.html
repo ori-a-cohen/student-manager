@@ -1531,43 +1531,68 @@
             if (!student) return;
             
             const cls = data.classes.find(c => c.id === student.classId);
-            let content = '';
+            let html = `
+                <html dir="rtl">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>כרטיס תלמיד - ${student.name}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; direction: rtl; }
+                        h1 { color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px; }
+                        h2 { color: #333; margin-top: 25px; font-size: 18px; }
+                        .section { margin-bottom: 20px; padding: 15px; background: #f9f9f9; border-radius: 8px; }
+                        .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
+                        .label { color: #666; }
+                        .value { font-weight: bold; }
+                        .note { background: white; padding: 12px; margin: 8px 0; border-radius: 6px; border-right: 3px solid #667eea; }
+                        .note-date { font-size: 12px; color: #888; margin-bottom: 5px; }
+                        .grade-row { display: flex; justify-content: space-between; padding: 8px 0; }
+                        .print-btn { position: fixed; top: 20px; left: 20px; padding: 12px 24px; background: #667eea; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; }
+                        @media print { .print-btn { display: none; } }
+                    </style>
+                </head>
+                <body>
+                    <button class="print-btn" onclick="window.print()">📄 שמירה כ-PDF</button>
+                    <h1>כרטיס תלמיד/ה: ${student.name}</h1>
+            `;
             
             // Basic info
             if (document.getElementById('expBasic').checked) {
-                content += `📋 פרטי תלמיד/ה\n`;
-                content += `━━━━━━━━━━━━━━━\n`;
-                content += `שם: ${student.name}\n`;
-                content += `כיתה: ${cls ? cls.name : ''}\n`;
+                let birthdayStr = '';
                 if (student.birthday) {
                     const bday = new Date(student.birthday);
-                    content += `תאריך לידה: ${bday.toLocaleDateString('he-IL')}\n`;
+                    const age = Math.floor((new Date() - bday) / (365.25 * 24 * 60 * 60 * 1000));
+                    birthdayStr = bday.toLocaleDateString('he-IL') + ` (גיל ${age})`;
                 }
-                if (student.phone) content += `טלפון: ${student.phone}\n`;
-                content += `\n`;
+                html += `
+                    <div class="section">
+                        <h2>📋 פרטים בסיסיים</h2>
+                        <div class="row"><span class="label">שם:</span><span class="value">${student.name}</span></div>
+                        <div class="row"><span class="label">כיתה:</span><span class="value">${cls ? cls.name : ''}</span></div>
+                        ${birthdayStr ? `<div class="row"><span class="label">תאריך לידה:</span><span class="value">${birthdayStr}</span></div>` : ''}
+                        ${student.phone ? `<div class="row"><span class="label">טלפון:</span><span class="value">${student.phone}</span></div>` : ''}
+                    </div>
+                `;
             }
             
             // Parents
             if (document.getElementById('expParents').checked) {
-                content += `👨‍👩‍👧 פרטי הורים\n`;
-                content += `━━━━━━━━━━━━━━━\n`;
-                if (student.momName || student.momPhone) {
-                    content += `אמא: ${student.momName || ''} ${student.momPhone ? '(' + student.momPhone + ')' : ''}\n`;
-                }
-                if (student.dadName || student.dadPhone) {
-                    content += `אבא: ${student.dadName || ''} ${student.dadPhone ? '(' + student.dadPhone + ')' : ''}\n`;
-                }
-                content += `\n`;
+                html += `
+                    <div class="section">
+                        <h2>👨‍👩‍👧 פרטי הורים</h2>
+                        <div class="row"><span class="label">👩 אמא:</span><span class="value">${student.momName || ''} ${student.momPhone ? '(' + student.momPhone + ')' : ''}</span></div>
+                        <div class="row"><span class="label">👨 אבא:</span><span class="value">${student.dadName || ''} ${student.dadPhone ? '(' + student.dadPhone + ')' : ''}</span></div>
+                    </div>
+                `;
             }
             
             // Grades
             if (document.getElementById('expGrades').checked && student.grades && student.grades.length > 0) {
-                content += `📊 ציונים\n`;
-                content += `━━━━━━━━━━━━━━━\n`;
+                html += `<div class="section"><h2>📊 ציונים</h2>`;
                 student.grades.forEach(g => {
-                    content += `${g.subject}: ${g.value}${g.note ? ' (' + g.note + ')' : ''}\n`;
+                    html += `<div class="grade-row"><span>${g.subject}</span><span class="value">${g.value}${g.note ? ' (' + g.note + ')' : ''}</span></div>`;
                 });
-                content += `\n`;
+                html += `</div>`;
             }
             
             // Notes by type
@@ -1584,26 +1609,27 @@
                 if (document.getElementById(nt.id).checked) {
                     const notes = (student.notes || []).filter(n => n.type === nt.type);
                     if (notes.length > 0) {
-                        content += `${nt.title}\n`;
-                        content += `━━━━━━━━━━━━━━━\n`;
+                        html += `<div class="section"><h2>${nt.title}</h2>`;
                         notes.forEach(n => {
-                            content += `[${n.date}] ${n.content}\n`;
+                            html += `<div class="note"><div class="note-date">${n.date}</div>${n.content}</div>`;
                         });
-                        content += `\n`;
+                        html += `</div>`;
                     }
                 }
             });
             
-            // Create and download file
-            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${student.name}_${new Date().toLocaleDateString('he-IL').replace(/\./g, '-')}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            html += `
+                    <p style="margin-top:30px;color:#888;font-size:12px;text-align:center;">
+                        נוצר בתאריך: ${new Date().toLocaleDateString('he-IL')}
+                    </p>
+                </body>
+                </html>
+            `;
+            
+            // Open in new window for printing/PDF
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(html);
+            printWindow.document.close();
             
             closeModal('exportModal');
         }
