@@ -6,6 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>ניהול תלמידים</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -15,14 +16,15 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: #f5f5f7;
+            font-family: 'Heebo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #faf6f1;
             min-height: 100vh;
             padding-bottom: 100px;
+            color: #5a4a3a;
         }
         
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #d4a574 0%, #c4956a 100%);
             color: white;
             padding: 20px;
             padding-top: 50px;
@@ -85,7 +87,7 @@
         }
         
         .pinned-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #d4a574 0%, #c4956a 100%);
             border-radius: 16px;
             padding: 16px;
             text-align: center;
@@ -137,11 +139,11 @@
         }
         
         .class-card {
-            background: white;
+            background: #fffbf7;
             border-radius: 16px;
             padding: 20px;
             text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 8px rgba(90,74,58,0.08);
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
             position: relative;
@@ -165,7 +167,7 @@
         }
         
         .class-card .pin-btn.pinned {
-            background: #667eea;
+            background: #d4a574;
             color: white;
         }
         
@@ -202,14 +204,14 @@
         }
         
         .student-item {
-            background: white;
+            background: #fffbf7;
             border-radius: 12px;
             padding: 14px;
             margin-bottom: 10px;
             display: flex;
             align-items: center;
             gap: 14px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            box-shadow: 0 2px 6px rgba(90,74,58,0.06);
             cursor: pointer;
             transition: transform 0.2s;
         }
@@ -222,7 +224,7 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #d4a574 0%, #b8936a 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -256,7 +258,7 @@
         }
         
         .add-student-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #d4a574 0%, #c4956a 100%);
             color: white;
             border: none;
             padding: 14px 24px;
@@ -266,7 +268,7 @@
             position: fixed;
             bottom: 30px;
             right: 20px;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 4px 15px rgba(180, 140, 100, 0.4);
             cursor: pointer;
             display: none;
         }
@@ -274,8 +276,8 @@
         #classInfoBtn {
             right: auto;
             left: 20px;
-            background: linear-gradient(135deg, #34c759 0%, #28a745 100%) !important;
-            box-shadow: 0 4px 15px rgba(52, 199, 89, 0.4);
+            background: linear-gradient(135deg, #a8c69f 0%, #8fb882 100%) !important;
+            box-shadow: 0 4px 15px rgba(143, 184, 130, 0.4);
         }
         
         /* Student Profile */
@@ -286,7 +288,7 @@
         .profile-header {
             text-align: center;
             padding: 20px;
-            background: white;
+            background: #fffbf7;
             border-radius: 16px;
             margin-bottom: 16px;
         }
@@ -295,7 +297,7 @@
             width: 100px;
             height: 100px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #d4a574 0%, #b8936a 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -350,7 +352,7 @@
         }
         
         .contact-btn {
-            background: #f0f0f5;
+            background: #efe8e0;
             border: none;
             padding: 10px 16px;
             border-radius: 20px;
@@ -360,21 +362,21 @@
             align-items: center;
             gap: 6px;
             text-decoration: none;
-            color: inherit;
+            color: #5a4a3a;
         }
         
         .contact-btn.call {
-            background: #34c759;
+            background: #a8c69f;
             color: white;
         }
         
         .contact-btn.mom {
-            background: #ff69b4;
+            background: #e8b4b8;
             color: white;
         }
         
         .contact-btn.dad {
-            background: #4a90d9;
+            background: #7eb5d6;
             color: white;
         }
         
@@ -391,7 +393,7 @@
         /* Tabs */
         .tabs {
             display: flex;
-            background: white;
+            background: #fffbf7;
             border-radius: 12px;
             padding: 4px;
             margin-bottom: 16px;
@@ -405,14 +407,14 @@
             border-radius: 10px;
             font-size: 13px;
             font-weight: 500;
-            color: #666;
+            color: #8a7a6a;
             cursor: pointer;
             transition: all 0.2s;
             white-space: nowrap;
         }
         
         .tab.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #d4a574 0%, #c4956a 100%);
             color: white;
         }
         
@@ -426,7 +428,7 @@
         
         /* Info Section */
         .info-card {
-            background: white;
+            background: #fffbf7;
             border-radius: 12px;
             padding: 16px;
             margin-bottom: 12px;
@@ -466,7 +468,7 @@
         
         /* Notes/Conversations */
         .note-item {
-            background: white;
+            background: #fffbf7;
             border-radius: 12px;
             padding: 14px;
             margin-bottom: 10px;
@@ -508,7 +510,7 @@
         }
         
         .add-note-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #d4a574 0%, #c4956a 100%);
             color: white;
             border: none;
             padding: 12px 20px;
@@ -603,7 +605,7 @@
         }
         
         .submit-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #d4a574 0%, #c4956a 100%);
             color: white;
             border: none;
             padding: 16px;
@@ -642,7 +644,7 @@
         /* Grades Table */
         .grades-table {
             width: 100%;
-            background: white;
+            background: #fffbf7;
             border-radius: 12px;
             overflow: hidden;
         }
@@ -651,14 +653,14 @@
         .grades-table td {
             padding: 12px;
             text-align: right;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid #efe8e0;
         }
         
         .grades-table th {
-            background: #f5f5f7;
+            background: #f5efe8;
             font-weight: 600;
             font-size: 13px;
-            color: #666;
+            color: #8a7a6a;
         }
         
         .grade-badge {
@@ -1154,7 +1156,7 @@
                     <div class="tab" onclick="switchTab('notes')">שיחות</div>
                     <div class="tab" onclick="switchTab('grades')">ציונים</div>
                     <div class="tab" onclick="switchTab('events')">אירועים</div>
-                    <div class="tab" onclick="switchTab('history')">מסמכים</div>
+                    <div class="tab" onclick="switchTab('history')">סיכומים</div>
                     <div class="tab" onclick="switchTab('parents')">מהורים</div>
                 </div>
                 
