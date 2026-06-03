@@ -64,6 +64,71 @@
             padding: 16px;
         }
         
+        /* Pinned Classes Section */
+        .pinned-section {
+            margin-bottom: 20px;
+        }
+        
+        .pinned-section h2 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .pinned-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .pinned-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            color: white;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .pinned-card .unpin-btn {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(255,255,255,0.3);
+            border: none;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        .pinned-card .icon {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+        
+        .pinned-card .name {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .pinned-card .count {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .section-title {
+            font-size: 14px;
+            color: #666;
+            margin: 20px 0 10px;
+        }
+        
         /* Class Cards */
         .class-grid {
             display: grid;
@@ -79,10 +144,29 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
         }
         
         .class-card:active {
             transform: scale(0.98);
+        }
+        
+        .class-card .pin-btn {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: #f0f0f5;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .class-card .pin-btn.pinned {
+            background: #667eea;
+            color: white;
         }
         
         .class-card .icon {
@@ -245,28 +329,57 @@
             font-size: 14px;
         }
         
+        .profile-birthday {
+            color: #888;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+        
         .contact-buttons {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             margin-top: 16px;
             justify-content: center;
+            flex-wrap: wrap;
         }
         
         .contact-btn {
+            background: #f0f0f5;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .contact-btn.call {
+            background: #34c759;
+            color: white;
+        }
+        
+        .contact-btn.mom {
+            background: #ff69b4;
+            color: white;
+        }
+        
+        .contact-btn.dad {
+            background: #4a90d9;
+            color: white;
+        }
+        
+        .export-btn {
             background: #f0f0f5;
             border: none;
             padding: 10px 20px;
             border-radius: 20px;
             font-size: 14px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .contact-btn.call {
-            background: #34c759;
-            color: white;
+            margin-top: 12px;
         }
         
         /* Tabs */
@@ -276,18 +389,20 @@
             border-radius: 12px;
             padding: 4px;
             margin-bottom: 16px;
+            overflow-x: auto;
         }
         
         .tab {
             flex: 1;
-            padding: 10px;
+            padding: 10px 8px;
             text-align: center;
             border-radius: 10px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             color: #666;
             cursor: pointer;
             transition: all 0.2s;
+            white-space: nowrap;
         }
         
         .tab.active {
@@ -351,10 +466,34 @@
             margin-bottom: 10px;
         }
         
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        
         .note-date {
             font-size: 12px;
             color: #666;
-            margin-bottom: 6px;
+        }
+        
+        .note-type-badge {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            background: #f0f0f5;
+            color: #666;
+        }
+        
+        .note-type-badge.discipline {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        .note-type-badge.committee {
+            background: #e3f2fd;
+            color: #1565c0;
         }
         
         .note-text {
@@ -451,6 +590,12 @@
             resize: vertical;
         }
         
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
         .submit-btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -521,6 +666,53 @@
         .grade-high { background: #d4edda; color: #155724; }
         .grade-mid { background: #fff3cd; color: #856404; }
         .grade-low { background: #f8d7da; color: #721c24; }
+        
+        /* Export Modal */
+        .export-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .export-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: #f5f5f7;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        
+        .export-option input {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .export-option label {
+            font-size: 15px;
+            cursor: pointer;
+        }
+        
+        /* Print Styles */
+        @media print {
+            .header, .tabs, .add-note-btn, .add-student-btn, .back-btn, .export-btn, .delete-btn, .contact-buttons, .edit-photo {
+                display: none !important;
+            }
+            body {
+                background: white;
+                padding: 20px;
+            }
+            .modal {
+                display: none !important;
+            }
+            .tab-content {
+                display: block !important;
+            }
+            .profile-header {
+                box-shadow: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -532,8 +724,15 @@
     
     <div class="container">
         <!-- Classes View -->
-        <div id="classesView" class="class-grid">
-            <!-- Classes will be rendered here -->
+        <div id="classesView">
+            <div id="pinnedSection" class="pinned-section" style="display:none">
+                <h2>📌 כיתות מוצמדות</h2>
+                <div id="pinnedGrid" class="pinned-grid"></div>
+            </div>
+            <div id="allClassesSection">
+                <div class="section-title" id="allClassesTitle" style="display:none">כל הכיתות</div>
+                <div id="classGrid" class="class-grid"></div>
+            </div>
         </div>
         
         <!-- Students List View -->
@@ -576,12 +775,26 @@
                 <input type="text" id="studentName" placeholder="שם פרטי ומשפחה">
             </div>
             <div class="form-group">
+                <label>תאריך לידה</label>
+                <input type="date" id="studentBirthday">
+            </div>
+            <div class="form-group">
                 <label>טלפון תלמיד/ה</label>
                 <input type="tel" id="studentPhone" placeholder="050-0000000">
             </div>
             <div class="form-group">
-                <label>טלפון הורים</label>
-                <input type="tel" id="parentPhone" placeholder="050-0000000">
+                <label>👩 אמא</label>
+                <div class="form-row">
+                    <input type="text" id="momName" placeholder="שם">
+                    <input type="tel" id="momPhone" placeholder="טלפון">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>👨 אבא</label>
+                <div class="form-row">
+                    <input type="text" id="dadName" placeholder="שם">
+                    <input type="tel" id="dadPhone" placeholder="טלפון">
+                </div>
             </div>
             <button class="submit-btn" onclick="addStudent()">הוספה</button>
         </div>
@@ -598,6 +811,8 @@
                 <label>סוג</label>
                 <select id="noteType">
                     <option value="conversation">שיחה עם הורים</option>
+                    <option value="discipline">אירוע משמעת</option>
+                    <option value="committee">ועדה</option>
                     <option value="diagnosis">אבחון</option>
                     <option value="note">הערה כללית</option>
                     <option value="parentday">יום הורים</option>
@@ -633,12 +848,63 @@
             <button class="submit-btn" onclick="addGrade()">שמירה</button>
         </div>
     </div>
+    
+    <!-- Export Modal -->
+    <div class="modal" id="exportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📄 יצוא מידע</h2>
+                <button class="modal-close" onclick="closeModal('exportModal')">×</button>
+            </div>
+            <p style="color:#666;margin-bottom:16px;">בחרי מה לכלול בפלט:</p>
+            <div class="export-options">
+                <div class="export-option">
+                    <input type="checkbox" id="expBasic" checked>
+                    <label for="expBasic">פרטים בסיסיים (שם, כיתה, ת. לידה)</label>
+                </div>
+                <div class="export-option">
+                    <input type="checkbox" id="expParents" checked>
+                    <label for="expParents">פרטי הורים</label>
+                </div>
+                <div class="export-option">
+                    <input type="checkbox" id="expGrades" checked>
+                    <label for="expGrades">ציונים</label>
+                </div>
+                <div class="export-option">
+                    <input type="checkbox" id="expConversations">
+                    <label for="expConversations">שיחות עם הורים</label>
+                </div>
+                <div class="export-option">
+                    <input type="checkbox" id="expDiscipline">
+                    <label for="expDiscipline">אירועי משמעת</label>
+                </div>
+                <div class="export-option">
+                    <input type="checkbox" id="expCommittees">
+                    <label for="expCommittees">ועדות</label>
+                </div>
+                <div class="export-option">
+                    <input type="checkbox" id="expDiagnosis">
+                    <label for="expDiagnosis">אבחונים</label>
+                </div>
+                <div class="export-option">
+                    <input type="checkbox" id="expNotes">
+                    <label for="expNotes">הערות כלליות</label>
+                </div>
+                <div class="export-option">
+                    <input type="checkbox" id="expParentDays">
+                    <label for="expParentDays">ימי הורים</label>
+                </div>
+            </div>
+            <button class="submit-btn" onclick="exportStudent()">📄 יצוא</button>
+        </div>
+    </div>
 
     <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="handlePhotoUpload(event)">
 
     <script>
         // Data Management
-        let data = JSON.parse(localStorage.getItem('teacherApp') || '{"classes":[],"students":[]}');
+        let data = JSON.parse(localStorage.getItem('teacherApp') || '{"classes":[],"students":[],"pinnedClasses":[]}');
+        if (!data.pinnedClasses) data.pinnedClasses = [];
         let currentView = 'classes';
         let currentClassId = null;
         let currentStudentId = null;
@@ -653,13 +919,48 @@
         
         // Render Functions
         function renderClasses() {
-            const container = document.getElementById('classesView');
+            // Render pinned classes
+            const pinnedSection = document.getElementById('pinnedSection');
+            const pinnedGrid = document.getElementById('pinnedGrid');
+            const allClassesTitle = document.getElementById('allClassesTitle');
+            
+            if (data.pinnedClasses.length > 0) {
+                pinnedSection.style.display = 'block';
+                allClassesTitle.style.display = 'block';
+                
+                let pinnedHtml = '';
+                data.pinnedClasses.forEach(classId => {
+                    const cls = data.classes.find(c => c.id === classId);
+                    if (cls) {
+                        const studentCount = data.students.filter(s => s.classId === cls.id).length;
+                        pinnedHtml += `
+                            <div class="pinned-card" onclick="openClass('${cls.id}')">
+                                <button class="unpin-btn" onclick="event.stopPropagation(); togglePin('${cls.id}')">✕</button>
+                                <div class="icon">📚</div>
+                                <div class="name">${cls.name}</div>
+                                <div class="count">${studentCount} תלמידים</div>
+                            </div>
+                        `;
+                    }
+                });
+                pinnedGrid.innerHTML = pinnedHtml;
+            } else {
+                pinnedSection.style.display = 'none';
+                allClassesTitle.style.display = 'none';
+            }
+            
+            // Render all classes
+            const container = document.getElementById('classGrid');
             let html = '';
             
             data.classes.forEach(cls => {
                 const studentCount = data.students.filter(s => s.classId === cls.id).length;
+                const isPinned = data.pinnedClasses.includes(cls.id);
                 html += `
                     <div class="class-card" onclick="openClass('${cls.id}')">
+                        <button class="pin-btn ${isPinned ? 'pinned' : ''}" onclick="event.stopPropagation(); togglePin('${cls.id}')" title="${isPinned ? 'הסר הצמדה' : 'הצמד'}">
+                            ${isPinned ? '📌' : '📍'}
+                        </button>
                         <div class="icon">📚</div>
                         <div class="name">${cls.name}</div>
                         <div class="count">${studentCount} תלמידים</div>
@@ -675,6 +976,21 @@
             `;
             
             container.innerHTML = html;
+        }
+        
+        function togglePin(classId) {
+            const index = data.pinnedClasses.indexOf(classId);
+            if (index > -1) {
+                data.pinnedClasses.splice(index, 1);
+            } else {
+                if (data.pinnedClasses.length >= 2) {
+                    alert('ניתן להצמיד עד 2 כיתות');
+                    return;
+                }
+                data.pinnedClasses.push(classId);
+            }
+            saveData();
+            renderClasses();
         }
         
         function renderStudents() {
@@ -700,13 +1016,16 @@
                 const avatarContent = student.photo 
                     ? `<img src="${student.photo}" alt="${student.name}">`
                     : initials;
+                
+                // Show parent phone (prefer mom, then dad)
+                const parentPhone = student.momPhone || student.dadPhone || student.parentPhone || '';
                     
                 html += `
                     <div class="student-item" onclick="openStudent('${student.id}')">
                         <div class="student-avatar">${avatarContent}</div>
                         <div class="student-info">
                             <div class="student-name">${student.name}</div>
-                            <div class="student-phone">📱 ${student.parentPhone || 'אין טלפון'}</div>
+                            <div class="student-phone">📱 ${parentPhone || 'אין טלפון'}</div>
                         </div>
                         <span style="color:#ccc">←</span>
                     </div>
@@ -728,12 +1047,41 @@
             
             const container = document.getElementById('profileView');
             
+            // Format birthday
+            let birthdayDisplay = '';
+            if (student.birthday) {
+                const bday = new Date(student.birthday);
+                birthdayDisplay = bday.toLocaleDateString('he-IL');
+                const age = Math.floor((new Date() - bday) / (365.25 * 24 * 60 * 60 * 1000));
+                birthdayDisplay += ` (גיל ${age})`;
+            }
+            
             // Notes by type
             const conversations = (student.notes || []).filter(n => n.type === 'conversation');
             const diagnoses = (student.notes || []).filter(n => n.type === 'diagnosis');
             const generalNotes = (student.notes || []).filter(n => n.type === 'note');
             const parentDays = (student.notes || []).filter(n => n.type === 'parentday');
+            const disciplineEvents = (student.notes || []).filter(n => n.type === 'discipline');
+            const committees = (student.notes || []).filter(n => n.type === 'committee');
             const grades = student.grades || [];
+            
+            // Build contact buttons
+            let contactButtons = '';
+            if (student.phone) {
+                contactButtons += `<a href="tel:${student.phone}" class="contact-btn">📱 תלמיד/ה</a>`;
+            }
+            if (student.momPhone) {
+                const momLabel = student.momName ? `אמא - ${student.momName}` : 'אמא';
+                contactButtons += `<a href="tel:${student.momPhone}" class="contact-btn mom">👩 ${momLabel}</a>`;
+            }
+            if (student.dadPhone) {
+                const dadLabel = student.dadName ? `אבא - ${student.dadName}` : 'אבא';
+                contactButtons += `<a href="tel:${student.dadPhone}" class="contact-btn dad">👨 ${dadLabel}</a>`;
+            }
+            // Legacy support
+            if (!student.momPhone && !student.dadPhone && student.parentPhone) {
+                contactButtons += `<a href="tel:${student.parentPhone}" class="contact-btn call">📞 הורים</a>`;
+            }
             
             container.innerHTML = `
                 <div class="profile-header">
@@ -743,16 +1091,18 @@
                     </div>
                     <div class="profile-name">${student.name}</div>
                     <div class="profile-class">כיתה ${cls ? cls.name : ''}</div>
+                    ${birthdayDisplay ? `<div class="profile-birthday">🎂 ${birthdayDisplay}</div>` : ''}
                     <div class="contact-buttons">
-                        ${student.phone ? `<a href="tel:${student.phone}" class="contact-btn">📱 תלמיד/ה</a>` : ''}
-                        ${student.parentPhone ? `<a href="tel:${student.parentPhone}" class="contact-btn call">📞 הורים</a>` : ''}
+                        ${contactButtons}
                     </div>
+                    <button class="export-btn" onclick="openModal('exportModal')">📄 יצוא מידע</button>
                 </div>
                 
                 <div class="tabs">
                     <div class="tab active" onclick="switchTab('info')">פרטים</div>
                     <div class="tab" onclick="switchTab('notes')">שיחות</div>
                     <div class="tab" onclick="switchTab('grades')">ציונים</div>
+                    <div class="tab" onclick="switchTab('events')">אירועים</div>
                     <div class="tab" onclick="switchTab('history')">היסטוריה</div>
                 </div>
                 
@@ -763,8 +1113,32 @@
                             <span class="info-value">${student.phone || 'לא הוזן'}</span>
                         </div>
                         <div class="info-row">
-                            <span class="info-label">טלפון הורים</span>
-                            <span class="info-value">${student.parentPhone || 'לא הוזן'}</span>
+                            <span class="info-label">תאריך לידה</span>
+                            <span class="info-value">${birthdayDisplay || 'לא הוזן'}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3>👩 אמא</h3>
+                        <div class="info-row">
+                            <span class="info-label">שם</span>
+                            <span class="info-value">${student.momName || 'לא הוזן'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">טלפון</span>
+                            <span class="info-value">${student.momPhone || 'לא הוזן'}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3>👨 אבא</h3>
+                        <div class="info-row">
+                            <span class="info-label">שם</span>
+                            <span class="info-value">${student.dadName || 'לא הוזן'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">טלפון</span>
+                            <span class="info-value">${student.dadPhone || 'לא הוזן'}</span>
                         </div>
                     </div>
                     
@@ -824,6 +1198,32 @@
                         </table>
                     ` : '<p style="color:#666;text-align:center;padding:20px;">אין ציונים</p>'}
                     <button class="add-note-btn" onclick="openModal('addGradeModal')">+ הוספת ציון</button>
+                </div>
+                
+                <div id="tabEvents" class="tab-content">
+                    <h3 style="margin-bottom: 12px; font-size: 16px;">⚠️ אירועי משמעת</h3>
+                    ${disciplineEvents.length > 0 ? disciplineEvents.map(n => `
+                        <div class="note-item">
+                            <div class="note-header">
+                                <div class="note-date">${n.date}</div>
+                                <span class="note-type-badge discipline">משמעת</span>
+                            </div>
+                            <div class="note-text">${n.content}</div>
+                        </div>
+                    `).join('') : '<p style="color:#666;text-align:center;padding:20px;">אין אירועים</p>'}
+                    <button class="add-note-btn" onclick="openNoteModal('discipline')">+ תיעוד אירוע משמעת</button>
+                    
+                    <h3 style="margin: 24px 0 12px; font-size: 16px;">📋 ועדות</h3>
+                    ${committees.length > 0 ? committees.map(n => `
+                        <div class="note-item">
+                            <div class="note-header">
+                                <div class="note-date">${n.date}</div>
+                                <span class="note-type-badge committee">ועדה</span>
+                            </div>
+                            <div class="note-text">${n.content}</div>
+                        </div>
+                    `).join('') : '<p style="color:#666;text-align:center;padding:20px;">אין ועדות</p>'}
+                    <button class="add-note-btn" onclick="openNoteModal('committee')">+ תיעוד ועדה</button>
                 </div>
                 
                 <div id="tabHistory" class="tab-content">
@@ -902,7 +1302,7 @@
                 document.querySelector('.back-btn').classList.remove('visible');
                 document.getElementById('addStudentBtn').style.display = 'none';
                 
-                document.getElementById('classesView').style.display = 'grid';
+                document.getElementById('classesView').style.display = 'block';
                 document.getElementById('studentsView').style.display = 'none';
             }
         }
@@ -918,8 +1318,12 @@
         
         function openAddStudentModal() {
             document.getElementById('studentName').value = '';
+            document.getElementById('studentBirthday').value = '';
             document.getElementById('studentPhone').value = '';
-            document.getElementById('parentPhone').value = '';
+            document.getElementById('momName').value = '';
+            document.getElementById('momPhone').value = '';
+            document.getElementById('dadName').value = '';
+            document.getElementById('dadPhone').value = '';
             openModal('addStudentModal');
         }
         
@@ -930,7 +1334,9 @@
                 'conversation': 'תיעוד שיחה עם הורים',
                 'diagnosis': 'הוספת אבחון',
                 'note': 'הוספת הערה',
-                'parentday': 'תיעוד יום הורים'
+                'parentday': 'תיעוד יום הורים',
+                'discipline': 'תיעוד אירוע משמעת',
+                'committee': 'תיעוד ועדה'
             };
             document.getElementById('noteModalTitle').textContent = titles[type];
             openModal('addNoteModal');
@@ -960,8 +1366,12 @@
                 id: generateId(),
                 classId: currentClassId,
                 name: name,
+                birthday: document.getElementById('studentBirthday').value,
                 phone: document.getElementById('studentPhone').value.trim(),
-                parentPhone: document.getElementById('parentPhone').value.trim(),
+                momName: document.getElementById('momName').value.trim(),
+                momPhone: document.getElementById('momPhone').value.trim(),
+                dadName: document.getElementById('dadName').value.trim(),
+                dadPhone: document.getElementById('dadPhone').value.trim(),
                 notes: [],
                 grades: []
             });
@@ -1045,6 +1455,88 @@
                 }
             };
             reader.readAsDataURL(file);
+        }
+        
+        function exportStudent() {
+            const student = data.students.find(s => s.id === currentStudentId);
+            if (!student) return;
+            
+            const cls = data.classes.find(c => c.id === student.classId);
+            let content = '';
+            
+            // Basic info
+            if (document.getElementById('expBasic').checked) {
+                content += `📋 פרטי תלמיד/ה\n`;
+                content += `━━━━━━━━━━━━━━━\n`;
+                content += `שם: ${student.name}\n`;
+                content += `כיתה: ${cls ? cls.name : ''}\n`;
+                if (student.birthday) {
+                    const bday = new Date(student.birthday);
+                    content += `תאריך לידה: ${bday.toLocaleDateString('he-IL')}\n`;
+                }
+                if (student.phone) content += `טלפון: ${student.phone}\n`;
+                content += `\n`;
+            }
+            
+            // Parents
+            if (document.getElementById('expParents').checked) {
+                content += `👨‍👩‍👧 פרטי הורים\n`;
+                content += `━━━━━━━━━━━━━━━\n`;
+                if (student.momName || student.momPhone) {
+                    content += `אמא: ${student.momName || ''} ${student.momPhone ? '(' + student.momPhone + ')' : ''}\n`;
+                }
+                if (student.dadName || student.dadPhone) {
+                    content += `אבא: ${student.dadName || ''} ${student.dadPhone ? '(' + student.dadPhone + ')' : ''}\n`;
+                }
+                content += `\n`;
+            }
+            
+            // Grades
+            if (document.getElementById('expGrades').checked && student.grades && student.grades.length > 0) {
+                content += `📊 ציונים\n`;
+                content += `━━━━━━━━━━━━━━━\n`;
+                student.grades.forEach(g => {
+                    content += `${g.subject}: ${g.value}${g.note ? ' (' + g.note + ')' : ''}\n`;
+                });
+                content += `\n`;
+            }
+            
+            // Notes by type
+            const noteTypes = [
+                { id: 'expConversations', type: 'conversation', title: '💬 שיחות עם הורים' },
+                { id: 'expDiscipline', type: 'discipline', title: '⚠️ אירועי משמעת' },
+                { id: 'expCommittees', type: 'committee', title: '📋 ועדות' },
+                { id: 'expDiagnosis', type: 'diagnosis', title: '🏥 אבחונים' },
+                { id: 'expNotes', type: 'note', title: '📝 הערות כלליות' },
+                { id: 'expParentDays', type: 'parentday', title: '👥 ימי הורים' }
+            ];
+            
+            noteTypes.forEach(nt => {
+                if (document.getElementById(nt.id).checked) {
+                    const notes = (student.notes || []).filter(n => n.type === nt.type);
+                    if (notes.length > 0) {
+                        content += `${nt.title}\n`;
+                        content += `━━━━━━━━━━━━━━━\n`;
+                        notes.forEach(n => {
+                            content += `[${n.date}] ${n.content}\n`;
+                        });
+                        content += `\n`;
+                    }
+                }
+            });
+            
+            // Create and download file
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${student.name}_${new Date().toLocaleDateString('he-IL').replace(/\./g, '-')}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            closeModal('exportModal');
         }
         
         // Initialize
