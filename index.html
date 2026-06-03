@@ -265,11 +265,17 @@
             font-weight: 600;
             position: fixed;
             bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
+            right: 20px;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
             cursor: pointer;
             display: none;
+        }
+        
+        #classInfoBtn {
+            right: auto;
+            left: 20px;
+            background: linear-gradient(135deg, #34c759 0%, #28a745 100%) !important;
+            box-shadow: 0 4px 15px rgba(52, 199, 89, 0.4);
         }
         
         /* Student Profile */
@@ -744,9 +750,15 @@
         <div id="profileView" class="student-profile">
             <!-- Profile will be rendered here -->
         </div>
+        
+        <!-- Class Profile View -->
+        <div id="classProfileView" class="student-profile" style="display:none">
+            <!-- Class profile will be rendered here -->
+        </div>
     </div>
     
     <button class="add-student-btn" id="addStudentBtn" onclick="openAddStudentModal()">+ הוספת תלמיד/ה</button>
+    <button class="add-student-btn" id="classInfoBtn" style="display:none;background:#34c759" onclick="openClassProfile()">📋 מידע על הכיתה</button>
     
     <!-- Add Class Modal -->
     <div class="modal" id="addClassModal">
@@ -905,6 +917,39 @@
     </div>
 
     <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="handlePhotoUpload(event)">
+    
+    <!-- Add Class Note Modal -->
+    <div class="modal" id="addClassNoteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="classNoteModalTitle">הוספת רשומה לכיתה</h2>
+                <button class="modal-close" onclick="closeModal('addClassNoteModal')">×</button>
+            </div>
+            <div class="form-group">
+                <label>סוג</label>
+                <select id="classNoteType" onchange="toggleClassFileUpload()">
+                    <option value="pedagogical">ועדה פדגוגית</option>
+                    <option value="event">אירוע כיתה</option>
+                    <option value="project">פרויקט</option>
+                    <option value="note">הערה כללית</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>כותרת</label>
+                <input type="text" id="classNoteTitle" placeholder="כותרת קצרה">
+            </div>
+            <div class="form-group">
+                <label>תוכן</label>
+                <textarea id="classNoteContent" placeholder="פרטים..."></textarea>
+            </div>
+            <div class="form-group" id="classFileUploadGroup">
+                <label>📎 צירוף קובץ (PDF/תמונה)</label>
+                <input type="file" id="classNoteFile" accept=".pdf,image/*" onchange="handleClassNoteFile(event)">
+                <div id="classFilePreview" style="margin-top:8px;font-size:13px;color:#666;"></div>
+            </div>
+            <button class="submit-btn" onclick="addClassNote()">שמירה</button>
+        </div>
+    </div>
 
     <script>
         // Data Management
@@ -1273,10 +1318,12 @@
             document.getElementById('headerSubtitle').textContent = data.students.filter(s => s.classId === classId).length + ' תלמידים';
             document.querySelector('.back-btn').classList.add('visible');
             document.getElementById('addStudentBtn').style.display = 'block';
+            document.getElementById('classInfoBtn').style.display = 'block';
             
             document.getElementById('classesView').style.display = 'none';
             document.getElementById('studentsView').style.display = 'block';
             document.getElementById('profileView').style.display = 'none';
+            document.getElementById('classProfileView').style.display = 'none';
             
             renderStudents();
         }
@@ -1289,10 +1336,12 @@
             document.getElementById('headerTitle').textContent = student.name;
             document.getElementById('headerSubtitle').textContent = 'פרופיל תלמיד/ה';
             document.getElementById('addStudentBtn').style.display = 'none';
+            document.getElementById('classInfoBtn').style.display = 'none';
             
             document.getElementById('classesView').style.display = 'none';
             document.getElementById('studentsView').style.display = 'none';
             document.getElementById('profileView').style.display = 'block';
+            document.getElementById('classProfileView').style.display = 'none';
             
             renderProfile();
         }
@@ -1305,9 +1354,21 @@
                 document.getElementById('headerTitle').textContent = 'כיתה ' + cls.name;
                 document.getElementById('headerSubtitle').textContent = data.students.filter(s => s.classId === currentClassId).length + ' תלמידים';
                 document.getElementById('addStudentBtn').style.display = 'block';
+                document.getElementById('classInfoBtn').style.display = 'block';
                 
                 document.getElementById('studentsView').style.display = 'block';
                 document.getElementById('profileView').style.display = 'none';
+                document.getElementById('classProfileView').style.display = 'none';
+            } else if (currentView === 'classProfile') {
+                currentView = 'students';
+                const cls = data.classes.find(c => c.id === currentClassId);
+                document.getElementById('headerTitle').textContent = 'כיתה ' + cls.name;
+                document.getElementById('headerSubtitle').textContent = data.students.filter(s => s.classId === currentClassId).length + ' תלמידים';
+                document.getElementById('addStudentBtn').style.display = 'block';
+                document.getElementById('classInfoBtn').style.display = 'block';
+                
+                document.getElementById('studentsView').style.display = 'block';
+                document.getElementById('classProfileView').style.display = 'none';
             } else if (currentView === 'students') {
                 currentView = 'classes';
                 currentClassId = null;
@@ -1315,6 +1376,7 @@
                 document.getElementById('headerSubtitle').textContent = 'בחרי כיתה להתחיל';
                 document.querySelector('.back-btn').classList.remove('visible');
                 document.getElementById('addStudentBtn').style.display = 'none';
+                document.getElementById('classInfoBtn').style.display = 'none';
                 
                 document.getElementById('classesView').style.display = 'block';
                 document.getElementById('studentsView').style.display = 'none';
@@ -1632,6 +1694,199 @@
             printWindow.document.close();
             
             closeModal('exportModal');
+        }
+        
+        // Class Profile Functions
+        let pendingClassFile = null;
+        let pendingClassFileName = null;
+        
+        function openClassProfile() {
+            currentView = 'classProfile';
+            const cls = data.classes.find(c => c.id === currentClassId);
+            
+            document.getElementById('headerTitle').textContent = 'כיתה ' + cls.name;
+            document.getElementById('headerSubtitle').textContent = 'מידע על הכיתה';
+            document.getElementById('addStudentBtn').style.display = 'none';
+            document.getElementById('classInfoBtn').style.display = 'none';
+            
+            document.getElementById('classesView').style.display = 'none';
+            document.getElementById('studentsView').style.display = 'none';
+            document.getElementById('profileView').style.display = 'none';
+            document.getElementById('classProfileView').style.display = 'block';
+            
+            renderClassProfile();
+        }
+        
+        function renderClassProfile() {
+            const cls = data.classes.find(c => c.id === currentClassId);
+            if (!cls) return;
+            
+            if (!cls.notes) cls.notes = [];
+            
+            const studentCount = data.students.filter(s => s.classId === cls.id).length;
+            const pedagogical = cls.notes.filter(n => n.type === 'pedagogical');
+            const events = cls.notes.filter(n => n.type === 'event');
+            const projects = cls.notes.filter(n => n.type === 'project');
+            const generalNotes = cls.notes.filter(n => n.type === 'note');
+            
+            const container = document.getElementById('classProfileView');
+            
+            container.innerHTML = `
+                <div class="profile-header">
+                    <div class="profile-avatar" style="font-size:50px;cursor:default">📚</div>
+                    <div class="profile-name">כיתה ${cls.name}</div>
+                    <div class="profile-class">${studentCount} תלמידים</div>
+                </div>
+                
+                <div class="tabs">
+                    <div class="tab active" onclick="switchClassTab('pedagogical')">ועדות</div>
+                    <div class="tab" onclick="switchClassTab('events')">אירועים</div>
+                    <div class="tab" onclick="switchClassTab('projects')">פרויקטים</div>
+                    <div class="tab" onclick="switchClassTab('notes')">הערות</div>
+                </div>
+                
+                <div id="classTabPedagogical" class="tab-content active">
+                    <h3 style="margin-bottom: 12px; font-size: 16px;">📋 ועדות פדגוגיות</h3>
+                    ${pedagogical.length > 0 ? pedagogical.map(n => renderClassNote(n)).join('') : '<p style="color:#666;text-align:center;padding:20px;">אין ועדות</p>'}
+                    <button class="add-note-btn" onclick="openClassNoteModal('pedagogical')">+ הוספת ועדה</button>
+                </div>
+                
+                <div id="classTabEvents" class="tab-content">
+                    <h3 style="margin-bottom: 12px; font-size: 16px;">🎉 אירועי כיתה</h3>
+                    ${events.length > 0 ? events.map(n => renderClassNote(n)).join('') : '<p style="color:#666;text-align:center;padding:20px;">אין אירועים</p>'}
+                    <button class="add-note-btn" onclick="openClassNoteModal('event')">+ הוספת אירוע</button>
+                </div>
+                
+                <div id="classTabProjects" class="tab-content">
+                    <h3 style="margin-bottom: 12px; font-size: 16px;">🎯 פרויקטים</h3>
+                    ${projects.length > 0 ? projects.map(n => renderClassNote(n)).join('') : '<p style="color:#666;text-align:center;padding:20px;">אין פרויקטים</p>'}
+                    <button class="add-note-btn" onclick="openClassNoteModal('project')">+ הוספת פרויקט</button>
+                </div>
+                
+                <div id="classTabNotes" class="tab-content">
+                    <h3 style="margin-bottom: 12px; font-size: 16px;">📝 הערות כלליות</h3>
+                    ${generalNotes.length > 0 ? generalNotes.map(n => renderClassNote(n)).join('') : '<p style="color:#666;text-align:center;padding:20px;">אין הערות</p>'}
+                    <button class="add-note-btn" onclick="openClassNoteModal('note')">+ הוספת הערה</button>
+                </div>
+            `;
+        }
+        
+        function renderClassNote(n) {
+            const typeLabels = {
+                'pedagogical': { label: 'ועדה', color: '#1565c0', bg: '#e3f2fd' },
+                'event': { label: 'אירוע', color: '#7b1fa2', bg: '#f3e5f5' },
+                'project': { label: 'פרויקט', color: '#2e7d32', bg: '#e8f5e9' },
+                'note': { label: 'הערה', color: '#666', bg: '#f5f5f5' }
+            };
+            const style = typeLabels[n.type] || typeLabels['note'];
+            
+            return `
+                <div class="note-item">
+                    <div class="note-header">
+                        <div class="note-date">${n.date}</div>
+                        <span class="note-type-badge" style="background:${style.bg};color:${style.color};">${style.label}</span>
+                    </div>
+                    ${n.title ? `<div style="font-weight:600;margin-bottom:6px;">${n.title}</div>` : ''}
+                    <div class="note-text">${n.content}</div>
+                    ${n.file ? `
+                        <div style="margin-top:10px;">
+                            <a href="${n.file}" target="_blank" download="${n.fileName || 'קובץ'}" 
+                               style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:#f0f0f5;border-radius:8px;color:#333;text-decoration:none;font-size:13px;">
+                                📎 ${n.fileName || 'צפייה בקובץ'}
+                            </a>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+        
+        function switchClassTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            const tabId = 'classTab' + tabName.charAt(0).toUpperCase() + tabName.slice(1);
+            document.getElementById(tabId).classList.add('active');
+        }
+        
+        function openClassNoteModal(type) {
+            document.getElementById('classNoteType').value = type;
+            document.getElementById('classNoteTitle').value = '';
+            document.getElementById('classNoteContent').value = '';
+            document.getElementById('classNoteFile').value = '';
+            document.getElementById('classFilePreview').innerHTML = '';
+            pendingClassFile = null;
+            pendingClassFileName = null;
+            
+            const titles = {
+                'pedagogical': 'הוספת ועדה פדגוגית',
+                'event': 'הוספת אירוע כיתה',
+                'project': 'הוספת פרויקט',
+                'note': 'הוספת הערה'
+            };
+            document.getElementById('classNoteModalTitle').textContent = titles[type];
+            openModal('addClassNoteModal');
+        }
+        
+        function toggleClassFileUpload() {
+            // File upload always visible for class notes
+        }
+        
+        function handleClassNoteFile(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                pendingClassFile = null;
+                pendingClassFileName = null;
+                document.getElementById('classFilePreview').innerHTML = '';
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                alert('הקובץ גדול מדי (מקסימום 5MB)');
+                event.target.value = '';
+                return;
+            }
+            
+            pendingClassFileName = file.name;
+            document.getElementById('classFilePreview').innerHTML = `✅ ${file.name}`;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                pendingClassFile = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function addClassNote() {
+            const cls = data.classes.find(c => c.id === currentClassId);
+            if (!cls) return;
+            
+            const content = document.getElementById('classNoteContent').value.trim();
+            if (!content) return alert('נא להזין תוכן');
+            
+            if (!cls.notes) cls.notes = [];
+            
+            const newNote = {
+                id: generateId(),
+                type: document.getElementById('classNoteType').value,
+                title: document.getElementById('classNoteTitle').value.trim(),
+                content: content,
+                date: new Date().toLocaleDateString('he-IL')
+            };
+            
+            if (pendingClassFile) {
+                newNote.file = pendingClassFile;
+                newNote.fileName = pendingClassFileName;
+            }
+            
+            cls.notes.unshift(newNote);
+            
+            pendingClassFile = null;
+            pendingClassFileName = null;
+            
+            saveData();
+            closeModal('addClassNoteModal');
+            renderClassProfile();
         }
         
         // Initialize
