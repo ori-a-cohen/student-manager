@@ -24,8 +24,8 @@
         }
         
         .header {
-            background: linear-gradient(135deg, #d4a574 0%, #c4956a 100%);
-            color: white;
+            background: linear-gradient(135deg, #e6cdb5 0%, #dcc1a8 100%);
+            color: #5a4a3a;
             padding: 20px;
             padding-top: 50px;
             position: sticky;
@@ -87,11 +87,11 @@
         }
         
         .pinned-card {
-            background: linear-gradient(135deg, #d4a574 0%, #c4956a 100%);
+            background: linear-gradient(135deg, #e6cdb5 0%, #dcc1a8 100%);
             border-radius: 16px;
             padding: 16px;
             text-align: center;
-            color: white;
+            color: #5a4a3a;
             cursor: pointer;
             position: relative;
         }
@@ -167,7 +167,7 @@
         }
         
         .class-card .pin-btn.pinned {
-            background: #d4a574;
+            background: #d4b896;
             color: white;
         }
         
@@ -224,11 +224,11 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #d4a574 0%, #b8936a 100%);
+            background: linear-gradient(135deg, #e6cdb5 0%, #dcc1a8 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: #5a4a3a;
             font-size: 20px;
             font-weight: 600;
             flex-shrink: 0;
@@ -258,7 +258,7 @@
         }
         
         .add-student-btn {
-            background: linear-gradient(135deg, #d4a574 0%, #c4956a 100%);
+            background: linear-gradient(135deg, #d4b896 0%, #c9a989 100%);
             color: white;
             border: none;
             padding: 14px 24px;
@@ -268,7 +268,7 @@
             position: fixed;
             bottom: 30px;
             right: 20px;
-            box-shadow: 0 4px 15px rgba(180, 140, 100, 0.4);
+            box-shadow: 0 4px 15px rgba(180, 160, 130, 0.3);
             cursor: pointer;
             display: none;
         }
@@ -276,8 +276,8 @@
         #classInfoBtn {
             right: auto;
             left: 20px;
-            background: linear-gradient(135deg, #a8c69f 0%, #8fb882 100%) !important;
-            box-shadow: 0 4px 15px rgba(143, 184, 130, 0.4);
+            background: linear-gradient(135deg, #b8d4b0 0%, #a5c69d 100%) !important;
+            box-shadow: 0 4px 15px rgba(165, 198, 157, 0.3);
         }
         
         /* Student Profile */
@@ -297,11 +297,11 @@
             width: 100px;
             height: 100px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #d4a574 0%, #b8936a 100%);
+            background: linear-gradient(135deg, #e6cdb5 0%, #dcc1a8 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: #5a4a3a;
             font-size: 40px;
             font-weight: 600;
             margin: 0 auto 12px;
@@ -414,8 +414,8 @@
         }
         
         .tab.active {
-            background: linear-gradient(135deg, #d4a574 0%, #c4956a 100%);
-            color: white;
+            background: linear-gradient(135deg, #d4b896 0%, #c9a989 100%);
+            color: #fff;
         }
         
         .tab-content {
@@ -510,7 +510,7 @@
         }
         
         .add-note-btn {
-            background: linear-gradient(135deg, #d4a574 0%, #c4956a 100%);
+            background: linear-gradient(135deg, #d4b896 0%, #c9a989 100%);
             color: white;
             border: none;
             padding: 12px 20px;
@@ -605,7 +605,7 @@
         }
         
         .submit-btn {
-            background: linear-gradient(135deg, #d4a574 0%, #c4956a 100%);
+            background: linear-gradient(135deg, #d4b896 0%, #c9a989 100%);
             color: white;
             border: none;
             padding: 16px;
@@ -1760,12 +1760,28 @@
             const token = btoa(student.id + ':' + student.name).replace(/=/g, '');
             const parentUrl = window.location.origin + window.location.pathname + '?parent=' + token;
             
-            // Copy to clipboard
-            navigator.clipboard.writeText(parentUrl).then(() => {
-                alert('הלינק הועתק! שלחי אותו להורים של ' + student.name);
-            }).catch(() => {
-                prompt('העתיקי את הלינק:', parentUrl);
-            });
+            // Show link in a modal-like overlay for easy copying
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+            overlay.innerHTML = `
+                <div style="background:#fffbf7;border-radius:16px;padding:24px;max-width:90%;text-align:center;direction:rtl;">
+                    <h3 style="margin:0 0 16px;color:#5a4a3a;">🔗 לינק להורים של ${student.name}</h3>
+                    <input type="text" value="${parentUrl}" readonly 
+                        style="width:100%;padding:12px;border:2px solid #d4a574;border-radius:8px;font-size:12px;text-align:left;direction:ltr;margin-bottom:16px;"
+                        onclick="this.select()">
+                    <p style="color:#8a7a6a;font-size:13px;margin-bottom:16px;">לחצי על הלינק לבחירה, ואז העתיקי ושלחי להורים</p>
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                        style="background:#d4a574;color:white;border:none;padding:12px 32px;border-radius:25px;font-size:16px;cursor:pointer;">
+                        סגירה
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            
+            // Also try to copy to clipboard
+            try {
+                navigator.clipboard.writeText(parentUrl);
+            } catch(e) {}
         }
         
         function checkParentMode() {
